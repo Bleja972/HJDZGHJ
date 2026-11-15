@@ -680,6 +680,7 @@ body{color:#eafbff;background:linear-gradient(#011225d9,#010612e8),url("https://
 @media(max-width:600px){.app{padding:7px}.title{font-size:1.05rem}.badge{padding:6px;min-width:92px}.game{height:740px}.operation{min-width:110px;padding:8px;font-size:1.35rem}.operation>div:first-child{font-size:.55rem!important}.racePanel{left:4%;width:min(92%,300px);bottom:165px}.dock{bottom:12px}.dock-label{font-size:.82rem;padding:9px}.answer{height:55px;width:min(180px,52vw)}.controls{left:7px;top:7px;gap:5px}.btnIcon{height:45px;width:45px;font-size:1.2rem}.speedHint{max-width:140px;font-size:.8rem;right:7px;top:10px}.card{padding:15px}.card h1{font-size:1.55rem}}
 @media(prefers-reduced-motion:reduce){.game::after,.pit{animation:none}.arcade-spark{display:none}}
 
+.runner{top:12px;width:49px;height:36px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 0 7px #55efff)!important}.runner .race-ship{width:49px;height:34px;overflow:visible}.runner#rival{filter:drop-shadow(0 0 8px #f168ff)!important}.laneLabel{font-size:1.4rem}.racePanel .lane{overflow:hidden}.racePanel .track{right:29px}.racePanel .flag{right:20px}@media(max-width:600px){.runner,.runner .race-ship{width:40px}.racePanel .track{right:25px}}
 </style>
 </head>
 <body>
@@ -746,16 +747,16 @@ body{color:#eafbff;background:linear-gradient(#011225d9,#010612e8),url("https://
     <div class="racePanel">
       <strong>Course</strong>
       <div class="lane">
-        <div class="laneLabel">🐦</div>
+        <div class="laneLabel" aria-label="Vaisseau bleu">🚀</div>
         <div class="track"></div>
         <div class="flag"></div>
-        <div class="runner" id="player">🐦</div>
+        <div class="runner" id="player" role="img" aria-label="Vaisseau bleu"><svg class="race-ship" viewBox="0 0 72 44" aria-hidden="true"><path d="M7 24 31 17 42 3 47 17 63 24 47 29 42 40 31 29Z" fill="#6aeaff" stroke="#dbfeff" stroke-width="2"/><path d="M19 23 45 20 55 24 45 27Z" fill="#12466f"/><path d="M11 25 2 28 11 31Z" fill="#ffeb75"/><circle cx="40" cy="23" r="5" fill="#fff4a5"/></svg></div>
       </div>
       <div class="lane">
-        <div class="laneLabel">🦎</div>
+        <div class="laneLabel" aria-label="Soucoupe violette">🛸</div>
         <div class="track pink"></div>
         <div class="flag"></div>
-        <div class="runner" id="rival">🦎</div>
+        <div class="runner" id="rival" role="img" aria-label="Soucoupe violette"><svg class="race-ship" viewBox="0 0 72 44" aria-hidden="true"><ellipse cx="36" cy="25" rx="31" ry="10" fill="#e96bf9" stroke="#ffd4ff" stroke-width="2"/><path d="M20 23C20 5 51 5 52 23Z" fill="#5b2c98" stroke="#ecb9ff" stroke-width="2"/><ellipse cx="36" cy="26" rx="19" ry="5" fill="#602a9c"/><circle cx="16" cy="26" r="3" fill="#fff6a4"/><circle cx="36" cy="30" r="3" fill="#fff6a4"/><circle cx="56" cy="26" r="3" fill="#fff6a4"/></svg></div>
       </div>
     </div>
 
@@ -774,7 +775,7 @@ body{color:#eafbff;background:linear-gradient(#011225d9,#010612e8),url("https://
         <h1>Mission néon — La course des calculs</h1>
         <p><strong>But :</strong> plusieurs calculs tombent en même temps. Écris une bonne réponse pour en faire disparaître un.</p>
         <p>Les calculs travaillent : <strong>les doubles, les presque doubles, les compléments à 10, les compléments à la dizaine supérieure et l’ajout de dizaines entières à un nombre</strong>.</p>
-        <p>À chaque bonne réponse, ton oiseau avance. Si une opération touche le sol, le lézard avance. Le jeu commence lentement puis accélère progressivement.</p>
+        <p>À chaque bonne réponse, ton vaisseau bleu avance. Si une opération touche le sol, la soucoupe violette avance. Le jeu commence lentement puis accélère progressivement.</p>
         <p><strong>Médailles :</strong> bronze jusqu’à 6 bonnes réponses, argent de 7 à 11, or à partir de 12 ou si tu atteins l’arrivée.</p>
         <p>À partir de la <strong>médaille d’or</strong>, les opérations descendent plus vite et apparaissent plus rapprochées.</p>
         <button class="startBtn" id="startBtn">Commencer</button>
@@ -906,9 +907,10 @@ soundBtn.addEventListener('click',()=>{arcadeSoundOn=!arcadeSoundOn;soundBtn.tex
   }
 
   function setRacers(){
-    const maxLeft = 78;
-    $('player').style.left = (54 + playerProgress*maxLeft) + '%';
-    $('rival').style.left = (54 + rivalProgress*maxLeft) + '%';
+    const lanes = document.querySelectorAll('.racePanel .lane');
+    const position = (lane, progress) => 54 + Math.max(0, lane.clientWidth - 54 - 62) * progress;
+    $('player').style.left = position(lanes[0],playerProgress) + 'px';
+    $('rival').style.left = position(lanes[1],rivalProgress) + 'px';
   }
 
   function bounce(el){
